@@ -1,0 +1,142 @@
+.ranking-table {
+  background: #0a1520;
+  border: 1px solid #1a2d42;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.ranking-table__header {
+  padding: 16px 24px;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4a9eca;
+  border-bottom: 1px solid #1a2d42;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #0d1a26;
+}
+
+.ranking-table__scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  padding: 12px 16px;
+  text-align: left;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #3a526a;
+  border-bottom: 1px solid #1a2535;
+  background: #090f1a;
+}
+
+.ranking-row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ranking-row:hover {
+  background: #0d1a26;
+}
+
+.ranking-row--active {
+  background: #0d1a26;
+}
+
+.ranking-row--active td {
+  border-left: none;
+}
+
+.ranking-row--active td:first-child {
+  border-left: 3px solid #4a9eca;
+}
+
+td {
+  padding: 14px 16px;
+  font-size: 0.82rem;
+  color: #8ba5be;
+  border-bottom: 1px solid #0f1d2b;
+  vertical-align: middle;
+}
+
+.ranking-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 0.7rem;
+  color: #fff;
+}
+
+.ranking-region {
+  font-weight: 600;
+  color: #c0d4e8;
+  font-size: 0.85rem;
+}
+
+.rating-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating-bar__fill {
+  height: 4px;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+  max-width: 60px;
+  min-width: 4px;
+}
+
+.rating-bar span {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: #c0d4e8;
+  font-size: 0.82rem;
+}
+
+.yes-tag {
+  background: rgba(109, 190, 160, 0.15);
+  color: #6dbea0;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.no-tag {
+  background: rgba(220, 100, 80, 0.1);
+  color: #d0806a;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.mono {
+  font-family: 'Syne', monospace;
+  font-size: 0.8rem;
+}
+
+.site-name {
+  font-size: 0.75rem;
+  color: #4a9eca;
+}

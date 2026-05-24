@@ -1,0 +1,109 @@
+.map-panel {
+  background: #0a1520;
+  border: 1px solid #1a2d42;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.map-panel__header {
+  padding: 16px 24px;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4a9eca;
+  border-bottom: 1px solid #1a2d42;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #0d1a26;
+}
+
+.map-panel__icon {
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.map-panel__map {
+  height: 340px;
+  z-index: 0;
+}
+
+/* Custom marker */
+:global(.custom-marker) {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  border: 2px solid rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+:global(.custom-marker:hover) {
+  transform: scale(1.15);
+}
+
+:global(.custom-popup .leaflet-popup-content-wrapper) {
+  background: #0d1a26;
+  border: 1px solid #1e2d3d;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  color: #c0d4e8;
+}
+
+:global(.custom-popup .leaflet-popup-tip) {
+  background: #1e2d3d;
+}
+
+:global(.map-popup) {
+  font-family: 'Syne', sans-serif;
+  padding: 4px;
+}
+
+:global(.map-popup__rank) {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+:global(.map-popup__name) {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #e0eaf5;
+  margin-bottom: 2px;
+}
+
+:global(.map-popup__region) {
+  font-size: 0.72rem;
+  color: #6b849e;
+  margin-bottom: 8px;
+}
+
+:global(.map-popup__stats) {
+  display: flex;
+  gap: 10px;
+  font-size: 0.72rem;
+}
+
+/* Override leaflet dark tile attribution */
+:global(.leaflet-control-attribution) {
+  background: rgba(0,0,0,0.5) !important;
+  color: #3a526a !important;
+  font-size: 0.6rem !important;
+}
+
+:global(.leaflet-control-attribution a) {
+  color: #3a526a !important;
+}
