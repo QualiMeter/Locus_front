@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
-import { REGIONS, SITES, Region } from '../data';
+import { SITES, Region } from '../data';
 import styles from './MapView.module.css';
 
 // Fix leaflet default icons
