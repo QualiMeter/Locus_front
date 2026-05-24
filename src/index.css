@@ -1,0 +1,44 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #F0EFEB;
+  --surface: #FFFFFF;
+  --surface2: #F7F6F2;
+  --accent: #1A46FF;
+  --accent2: #0A2CC7;
+  --text: #0D0D0D;
+  --text-muted: #7A7A72;
+  --border: #DDDDD6;
+  --positive: #1A6E3C;
+  --positive-bg: #E2F5EB;
+  --warning: #B16E24;
+  --warning-bg: #FFF3DC;
+  --negative: #BC2C2C;
+  --negative-bg: #FFE8E8;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.10);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.leaflet-container { font-family: var(--font-body) !important; }

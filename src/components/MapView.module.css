@@ -1,0 +1,6 @@
+.map {
+  height: 300px;
+  border-radius: 14px;
+  overflow: hidden;
+  z-index: 1;
+}
