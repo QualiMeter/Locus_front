@@ -1,5 +1,10 @@
 import React from 'react';
-import { Region, ArchPriority } from '../data';
+
+import {
+  Region,
+  ArchPriority,
+} from '../data';
+
 import styles from './ConceptBoard.module.css';
 
 interface Props {
@@ -7,62 +12,287 @@ interface Props {
   priority: ArchPriority;
 }
 
-const PRIORITY_LABELS: Record<ArchPriority, string> = {
-  authentic: 'Аутентичность региону',
+const PRIORITY_LABELS: Record<
+    ArchPriority,
+    string
+> = {
+  authentic:
+      'Аутентичность региону',
+
   techno: 'Техно-стиль',
+
   eco: 'Экодизайн',
 };
 
-const PRIORITY_DESC: Record<ArchPriority, (r: Region) => string> = {
-  authentic: (r) => `Интеграция в ${r.cultural.styles.join(', ')} — сохранение духа места`,
-  techno: () => 'Хай-тек, металл, строгий минимализм, промышленная эстетика',
-  eco: () => 'Природные материалы, биофилия, зелёные кровли и вертикальное озеленение',
+const PRIORITY_DESC: Record<
+    ArchPriority,
+    (r: Region) => string
+> = {
+  authentic: (r) =>
+      `Архитектурная интеграция в локальный контекст региона: ${r.cultural.styles.join(
+          ', ',
+      )}. Основная идея — подчеркнуть идентичность территории через материалы, цветовую палитру и общественные пространства.`,
+
+  techno: () =>
+      'Современная промышленная эстетика: металл, стекло, строгая геометрия, минимализм и выразительные инженерные конструкции.',
+
+  eco: () =>
+      'Биофильный дизайн с озеленением, натуральными материалами, светлыми фасадами и интеграцией природных сценариев.',
 };
 
-export const ConceptBoard: React.FC<Props> = ({ region, priority }) => {
-  const palette = priority === 'authentic'
-    ? region.cultural.colors_authentic
-    : priority === 'techno'
-    ? region.cultural.colors_techno
-    : region.cultural.colors_eco;
+const HERO_IMAGES: Record<
+    ArchPriority,
+    string
+> = {
+  authentic:
+      'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?q=80&w=1600&auto=format&fit=crop',
 
-  let materials = [...region.cultural.materials];
-  if (priority === 'techno') materials = ['Сталь', 'Стеклофибробетон', ...materials.slice(0, 2)];
-  if (priority === 'eco') materials = ['Древесина', 'Камень', 'Эко-черепица'];
+  techno:
+      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1600&auto=format&fit=crop',
+
+  eco:
+      'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?q=80&w=1600&auto=format&fit=crop',
+};
+
+export const ConceptBoard: React.FC<
+    Props
+> = ({ region, priority }) => {
+  const palette =
+      priority === 'authentic'
+          ? region.cultural
+              .colors_authentic
+          : priority === 'techno'
+              ? region.cultural.colors_techno
+              : region.cultural.colors_eco;
+
+  let materials = [
+    ...region.cultural.materials,
+  ];
+
+  if (priority === 'techno') {
+    materials = [
+      'Сталь',
+      'Алюминий',
+      'Стекло',
+      'Композитные панели',
+    ];
+  }
+
+  if (priority === 'eco') {
+    materials = [
+      'Древесина',
+      'Камень',
+      'Эко-панели',
+      'Озеленение',
+    ];
+  }
 
   return (
-    <div className={styles.board}>
-      <div className={styles.paletteSide}>
-        <div className={styles.paletteLabel}>Цветовая палитра</div>
-        <div className={styles.swatches}>
-          {palette.map(color => (
-            <div key={color} className={styles.swatch} style={{ background: color }}>
-              <span className={styles.swatchHex}>{color}</span>
+      <div className={styles.board}>
+        {/* HERO */}
+        <div
+            className={styles.hero}
+            style={{
+              backgroundImage: `url(${HERO_IMAGES[priority]})`,
+            }}
+        >
+          <div className={styles.heroOverlay}>
+            <div
+                className={styles.heroTop}
+            >
+              <div
+                  className={
+                    styles.priorityBadge
+                  }
+              >
+                {
+                  PRIORITY_LABELS[
+                      priority
+                      ]
+                }
+              </div>
+
+              <div
+                  className={
+                    styles.regionBadge
+                  }
+              >
+                {region.name}
+              </div>
             </div>
-          ))}
-        </div>
-        <div className={styles.priorityTag}>{PRIORITY_LABELS[priority]}</div>
-      </div>
-      <div className={styles.infoSide}>
-        <div className={styles.styleBlock}>
-          <div className={styles.sectionLabel}>Архитектурные стили</div>
-          <div className={styles.styleNames}>{region.cultural.styles.join(' · ')}</div>
-        </div>
-        <div className={styles.materialsBlock}>
-          <div className={styles.sectionLabel}>Материалы</div>
-          <div className={styles.materialTags}>
-            {materials.map(m => <span key={m} className={styles.matTag}>{m}</span>)}
+
+            <div
+                className={
+                  styles.heroBottom
+                }
+            >
+              <h2
+                  className={
+                    styles.heroTitle
+                  }
+              >
+                Архитектурный
+                концепт площадки
+              </h2>
+
+              <p
+                  className={
+                    styles.heroDesc
+                  }
+              >
+                {
+                  PRIORITY_DESC[
+                      priority
+                      ](region)
+                }
+              </p>
+            </div>
           </div>
         </div>
-        <div className={styles.descBlock}>
-          <div className={styles.sectionLabel}>Концепция</div>
-          <p className={styles.descText}>{PRIORITY_DESC[priority](region)}</p>
-        </div>
-        <div className={styles.refBlock}>
-          <div className={styles.sectionLabel}>Референсы</div>
-          <p className={styles.refText}>{region.cultural.styles[0]} архитектура — характерные материалы и детали региона</p>
+
+        {/* CONTENT */}
+        <div className={styles.content}>
+          {/* COLORS */}
+          <div className={styles.card}>
+            <div
+                className={
+                  styles.cardLabel
+                }
+            >
+              Цветовая палитра
+            </div>
+
+            <div
+                className={
+                  styles.paletteGrid
+                }
+            >
+              {palette.map((color) => (
+                  <div
+                      key={color}
+                      className={
+                        styles.colorCard
+                      }
+                  >
+                    <div
+                        className={
+                          styles.colorPreview
+                        }
+                        style={{
+                          background:
+                          color,
+                        }}
+                    />
+
+                    <div
+                        className={
+                          styles.colorHex
+                        }
+                    >
+                      {color}
+                    </div>
+                  </div>
+              ))}
+            </div>
+          </div>
+
+          {/* STYLES */}
+          <div className={styles.card}>
+            <div
+                className={
+                  styles.cardLabel
+                }
+            >
+              Архитектурные стили
+            </div>
+
+            <div
+                className={
+                  styles.stylesWrap
+                }
+            >
+              {region.cultural.styles.map(
+                  (style) => (
+                      <div
+                          key={style}
+                          className={
+                            styles.styleCard
+                          }
+                      >
+                        {style}
+                      </div>
+                  ),
+              )}
+            </div>
+          </div>
+
+          {/* MATERIALS */}
+          <div className={styles.card}>
+            <div
+                className={
+                  styles.cardLabel
+                }
+            >
+              Материалы
+            </div>
+
+            <div
+                className={
+                  styles.materialsWrap
+                }
+            >
+              {materials.map((m) => (
+                  <div
+                      key={m}
+                      className={
+                        styles.materialTag
+                      }
+                  >
+                    {m}
+                  </div>
+              ))}
+            </div>
+          </div>
+
+          {/* REFERENCE */}
+          <div
+              className={`${styles.card} ${styles.referenceCard}`}
+          >
+            <div
+                className={
+                  styles.cardLabel
+                }
+            >
+              Архитектурная
+              рекомендация
+            </div>
+
+            <p
+                className={
+                  styles.referenceText
+                }
+            >
+              Рекомендуется
+              использование
+              локальных
+              материалов и
+              формообразования,
+              характерного для{' '}
+              {
+                region.cultural
+                    .styles[0]
+              }
+              . Приоритет —
+              создание узнаваемой
+              промышленной
+              архитектуры с
+              интеграцией
+              общественных
+              пространств и
+              благоустройства.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
