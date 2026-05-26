@@ -504,3 +504,36 @@
     display: none;
   }
 }
+/* В файл App.module.css */
+
+.regionTabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px; /* Отступ от заголовка, если кнопки перенесутся на новую строку */
+  flex-wrap: wrap; /* Позволяет кнопкам переноситься, если мало места */
+}
+
+.regionTab {
+  padding: 6px 14px;
+  border-radius: 999px; /* Овальная форма */
+  border: 1px solid var(--border);
+  background: var(--card-2);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.regionTab:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.regionTabActive {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
