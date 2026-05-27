@@ -87,8 +87,15 @@ export async function fetchCatalog(): Promise<{ regions: RegionDto[]; sites: Sit
     fetch(`${API_BASE_URL}/api/catalog/regions`),
     fetch(`${API_BASE_URL}/api/catalog/sites`),
   ]);
-  if (!regRes.ok || !siteRes.ok) throw new Error('Failed to fetch catalog');
-  return { regions: await regRes.json(), sites: await siteRes.json() };
+
+  if (!regRes.ok || !siteRes.ok) {
+    throw new Error('Ошибка загрузки каталога');
+  }
+
+  return {
+    regions: await regRes.json(),
+    sites: await siteRes.json(),
+  };
 }
 
 

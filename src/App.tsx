@@ -1,20 +1,44 @@
 import { useMemo, useState, useEffect } from 'react';
-import { REGIONS, SITES, FormState, ArchPriority, HousingType } from './data';
+import {
+  REGIONS,
+  SITES,
+  FormState,
+  ArchPriority,
+  HousingType,
+} from './data';
 import { NumericInput } from './components/NumericInput';
 import { MapView } from './components/MapView';
 import { ConceptBoard } from './components/ConceptBoard';
 import { Analytics } from './components/Analytics';
 import styles from './App.module.css';
-import { analyzeLocation, fetchCatalog, AnalysisResultDto, RegionDto, SiteDto } from './api';
+import {
+  analyzeLocation,
+  fetchCatalog,
+  AnalysisResultDto,
+  RegionDto,
+  SiteDto
+} from './api';
 
 const DEFAULT_FORM: FormState = {
-  volume: 300, workers: 80, budget: 150, railway: false, highwayDist: 15,
-  archPriority: 'authentic', amenities: [], housing: 30, housingType: 'dormitory',
-  kindergarten: 15, sports: [],
+  volume: 300,
+  workers: 80,
+  budget: 150,
+  railway: false,
+  highwayDist: 15,
+  archPriority: 'authentic',
+  amenities: [],
+  housing: 30,
+  housingType: 'dormitory',
+  kindergarten: 15,
+  sports: [],
 };
 
-const AMENITIES_OPTIONS = ['Аллея', 'Сквер с фонтаном', 'Беседки', 'Сцена', 'Тропа здоровья', 'Пруд', 'Арт-объект'];
-const SPORTS_OPTIONS = ['Уличные тренажёры', 'Стадион', 'Бассейн', 'Спортзал', 'Хоккейная коробка'];
+const AMENITIES_OPTIONS = [
+  'Аллея', 'Сквер с фонтаном', 'Беседки', 'Сцена', 'Тропа здоровья', 'Пруд', 'Арт-объект',
+];
+const SPORTS_OPTIONS = [
+  'Уличные тренажёры', 'Стадион', 'Бассейн', 'Спортзал', 'Хоккейная коробка',
+];
 
 function toggleArr(arr: string[], val: string): string[] {
   return arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
@@ -25,30 +49,53 @@ export default function App() {
   const [activeRegionIdx, setActiveRegionIdx] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'dark' | 'light'>(
+    () => (localStorage.getItem('theme') as 'dark' | 'light') || 'dark',
+  );
+
+  // Состояние для данных с бэкенда
+  const [allData, setAllData] = useState<{ regions: RegionDto[]; sites: SiteDto[] } | null>(null);
+  // Состояние для результатов поиска
   const [apiResults, setApiResults] = useState<AnalysisResultDto | null>(null);
-  const [initialData, setInitialData] = useState<{ regions: RegionDto[]; sites: SiteDto[] } | null>(null);
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => (localStorage.getItem('theme') as 'dark' | 'light') || 'dark');
+
+  // 1. Загрузка данных при запуске
+  useEffect(() => {
+    fetchCatalog()
+      .then((data) => setAllData(data))
+      .catch((err) => {
+        console.error(err);
+        // Если бэкенд недоступен, используем локальные данные
+        setAllData({ regions: REGIONS as any, sites: SITES as any });
+      });
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  useEffect(() => {
-    fetchCatalog()
-      .then(setInitialData)
-      .catch(() => setInitialData({ regions: REGIONS, sites: SITES }));
-  }, []);
-
+  // Определяем, какие данные показывать: результаты поиска ИЛИ весь каталог
   const isSearched = apiResults !== null;
-  const displayRegions = isSearched ? apiResults!.topRegions : (initialData?.regions || REGIONS);
-  const displaySites = isSearched ? apiResults!.filteredSites : (initialData?.sites || SITES);
+  const displayRegions = isSearched
+    ? apiResults!.topRegions
+    : (allData?.regions || REGIONS);
 
-  const sortedRegions = useMemo(() => [...displayRegions].sort((a, b) => b.rating - a.rating), [displayRegions]);
+  const displaySites = isSearched
+    ? apiResults!.filteredSites
+    : (allData?.sites || SITES);
 
+  // Сортировка регионов
+  const sortedRegions = useMemo(
+    () => [...displayRegions].sort((a, b) => b.rating - a.rating),
+    [displayRegions],
+  );
+
+  // Сброс индекса, если регион вышел за пределы списка
   useEffect(() => {
-    if (activeRegionIdx >= sortedRegions.length) setActiveRegionIdx(0);
-  }, [sortedRegions]);
+    if (activeRegionIdx >= sortedRegions.length) {
+      setActiveRegionIdx(0);
+    }
+  }, [sortedRegions, activeRegionIdx]);
 
   const handleFind = async () => {
     setLoading(true);
@@ -70,11 +117,13 @@ export default function App() {
       setApiResults(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка запроса');
+      setApiResults(null);
     } finally {
       setLoading(false);
     }
   };
 
+  // Кнопка очистки поиска
   const handleClear = () => {
     setApiResults(null);
     setError(null);
@@ -82,13 +131,18 @@ export default function App() {
   };
 
   const activeRegion = sortedRegions[Math.min(activeRegionIdx, sortedRegions.length - 1)] || (displayRegions[0] as RegionDto);
-  const bestSiteInRegion = activeRegion.top_sites?.[0];
+
+  // Ищем лучшую площадку в активном регионе (для поиска из результатов) или первую попавшуюся
+  const bestSiteInRegion = (activeRegion as any).top_sites?.[0];
   const siteForAnalytics = bestSiteInRegion || displaySites.find((s) => s.region_id === activeRegion.id) || (displaySites[0] as SiteDto);
 
   return (
     <div className={styles.root}>
       <header className={styles.header}>
-        <div className={styles.logo}><span className={styles.logoMark}>L</span><span className={styles.logoText}>LOCUS</span></div>
+        <div className={styles.logo}>
+          <span className={styles.logoMark}>L</span>
+          <span className={styles.logoText}>LOCUS</span>
+        </div>
         <div className={styles.headerSub}>Умный подбор локации для производства сэндвич-панелей</div>
         <button className={styles.themeBtn} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
           {theme === 'dark' ? '☀ Светлая' : '🌙 Тёмная'}
@@ -98,6 +152,7 @@ export default function App() {
       <div className={styles.layout}>
         <aside className={styles.aside}>
           <div className={styles.asideInner}>
+            {/* ... ФОРМЫ ВВОДА (без изменений) ... */}
             <div className={styles.formBlock}>
               <div className={styles.formBlockTitle}><span className={styles.formBlockIcon}>📦</span>Производство</div>
               <div className={styles.formFields}>
@@ -113,7 +168,8 @@ export default function App() {
                 <div className={styles.selectWrap}>
                   <label className={styles.selectLabel}>Ж/Д ветка</label>
                   <select className={styles.select} value={form.railway ? 'true' : 'false'} onChange={(e) => setForm((f) => ({ ...f, railway: e.target.value === 'true' }))}>
-                    <option value="false">Не требуется</option><option value="true">Требуется</option>
+                    <option value="false">Не требуется</option>
+                    <option value="true">Требуется</option>
                   </select>
                 </div>
                 <NumericInput label="Макс. расстояние до трассы" value={form.highwayDist} min={1} max={100} step={1} unit="км" onChange={(v) => setForm((f) => ({ ...f, highwayDist: v }))} />
@@ -126,7 +182,9 @@ export default function App() {
                 <div className={styles.selectWrap}>
                   <label className={styles.selectLabel}>Архитектурный приоритет</label>
                   <select className={styles.select} value={form.archPriority} onChange={(e) => setForm((f) => ({ ...f, archPriority: e.target.value as ArchPriority }))}>
-                    <option value="authentic">Аутентичность региону</option><option value="techno">Техно-стиль</option><option value="eco">Экодизайн</option>
+                    <option value="authentic">Аутентичность региону</option>
+                    <option value="techno">Техно-стиль</option>
+                    <option value="eco">Экодизайн</option>
                   </select>
                 </div>
                 <div className={styles.chipGroupWrap}>
@@ -172,6 +230,7 @@ export default function App() {
               </div>
             </div>
 
+            {/* КНОПКИ */}
             <button className={styles.findBtn} onClick={handleFind} disabled={loading}>
               <span>{loading ? '⏳' : '📍'}</span>
               {loading ? 'Поиск...' : 'Найти участок'}
@@ -179,7 +238,7 @@ export default function App() {
 
             {isSearched && (
               <button className={styles.findBtn} onClick={handleClear} style={{ background: '#6c757d', marginTop: '8px' }}>
-                <span>🔄</span> Показать все площадки
+                <span>🔄</span> Показать все участки
               </button>
             )}
           </div>
@@ -192,7 +251,8 @@ export default function App() {
               {isSearched ? 'ТОП-3 региона с площадками' : 'Все регионы и площадки'}
             </div>
             <div className={styles.cardBody}>
-              <MapView topRegions={sortedRegions.slice(0, 3)} />
+              {/* Если поиск не выполнен, показываем все регионы, иначе только ТОП-3 */}
+              <MapView topRegions={isSearched ? sortedRegions.slice(0, 3) : sortedRegions} />
               <div className={styles.tableWrap}>
                 <table className={styles.regionsTable}>
                   <thead>
@@ -225,7 +285,7 @@ export default function App() {
             <div className={styles.cardHeader}>
               <span className={styles.cardIcon}>🖼</span> Концепт-борд
               <div className={styles.regionTabs}>
-                {sortedRegions.slice(0, 3).map((r, i) => (
+                {(isSearched ? sortedRegions.slice(0, 3) : sortedRegions).map((r, i) => (
                   <button key={r.id} className={`${styles.regionTab} ${activeRegionIdx === i ? styles.regionTabActive : ''}`} onClick={() => setActiveRegionIdx(i)}>{r.name}</button>
                 ))}
               </div>
