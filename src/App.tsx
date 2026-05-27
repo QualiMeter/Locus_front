@@ -15,7 +15,7 @@ import { Analytics } from './components/Analytics';
 
 import styles from './App.module.css';
 import { useEffect } from 'react';
-import { analyzeLocation, AnalysisResultDto, RegionDto, SiteDto } from './api';
+import { analyzeLocation, AnalysisResultDto } from './api';
 const DEFAULT_FORM: FormState = {
   volume: 300,
 

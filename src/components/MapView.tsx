@@ -7,8 +7,6 @@ import {
 
 import L from 'leaflet';
 
-import 'leaflet/dist/leaflet.css';
-
 import { Region } from '../data';
 import { RegionDto } from '../api';
 
@@ -28,8 +26,8 @@ L.Icon.Default.mergeOptions({
 });
 
 export function MapView({
-                            topRegions,
-                        }: Props) {
+    topRegions,
+}: Props) {
     return (
         <div className={styles.mapWrap}>
             <MapContainer
@@ -83,9 +81,9 @@ export function MapView({
                                             styles.popupRow
                                         }
                                     >
-                    <span>
-                      Рейтинг
-                    </span>
+                                        <span>
+                                            Рейтинг
+                                        </span>
 
                                         <strong>
                                             {region.rating}
@@ -97,9 +95,9 @@ export function MapView({
                                             styles.popupRow
                                         }
                                     >
-                    <span>
-                      Тариф
-                    </span>
+                                        <span>
+                                            Тариф
+                                        </span>
 
                                         <strong>
                                             {
@@ -114,9 +112,9 @@ export function MapView({
                                             styles.popupRow
                                         }
                                     >
-                    <span>
-                      Спрос
-                    </span>
+                                        <span>
+                                            Спрос
+                                        </span>
 
                                         <strong>
                                             {region.demand_score.toFixed(
@@ -130,9 +128,9 @@ export function MapView({
                                             styles.popupRow
                                         }
                                     >
-                    <span>
-                      Колледжи
-                    </span>
+                                        <span>
+                                            Колледжи
+                                        </span>
 
                                         <strong>
                                             {
@@ -152,11 +150,11 @@ export function MapView({
                 <div
                     className={styles.legendItem}
                 >
-          <span
-              className={
-                  styles.legendDotPrimary
-              }
-          />
+                    <span
+                        className={
+                            styles.legendDotPrimary
+                        }
+                    />
 
                     Лучший регион
                 </div>
@@ -164,11 +162,11 @@ export function MapView({
                 <div
                     className={styles.legendItem}
                 >
-          <span
-              className={
-                  styles.legendDot
-              }
-          />
+                    <span
+                        className={
+                            styles.legendDot
+                        }
+                    />
 
                     Остальные регионы
                 </div>

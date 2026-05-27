@@ -1,6 +1,4 @@
-const API_BASE_URL = import.meta.env.DEV
-  ? 'http://localhost:5035'
-  : 'https://locusback.up.railway.app';
+const API_BASE_URL = 'https://locusback.up.railway.app';
 
 export interface AnalysisInput {
   ProductionVolumeKmsq: number;
