@@ -28,10 +28,16 @@ L.Icon.Default.mergeOptions({
 export function MapView({
     topRegions,
 }: Props) {
+    const mapCenter: [number, number] = topRegions.length > 0 && topRegions[0].top_sites && topRegions[0].top_sites.length > 0
+        ? topRegions[0].top_sites[0].coords
+        : topRegions.length > 0
+            ? topRegions[0].coords
+            : [54.5, 44];
+
     return (
         <div className={styles.mapWrap}>
             <MapContainer
-                center={[54.5, 44]}
+                center={mapCenter}
                 zoom={4}
                 scrollWheelZoom={false}
                 className={styles.map}
@@ -43,106 +49,196 @@ export function MapView({
                 />
 
                 {topRegions.map(
-                    (region, index) => (
-                        <CircleMarker
-                            key={region.id}
-                            center={region.coords}
-                            radius={
-                                index === 0 ? 18 : 14
-                            }
-                            pathOptions={{
-                                color:
-                                    index === 0
-                                        ? '#4DA3FF'
-                                        : '#7C8AA5',
+                    (region, regionIndex) => {
+                        const sites = region.top_sites || [];
+                        if (sites.length === 0) {
+                            return (
+                                <CircleMarker
+                                    key={region.id}
+                                    center={region.coords}
+                                    radius={regionIndex === 0 ? 18 : 14}
+                                    pathOptions={{
+                                        color:
+                                            regionIndex === 0
+                                                ? '#4DA3FF'
+                                                : '#7C8AA5',
+                                        fillColor:
+                                            regionIndex === 0
+                                                ? '#4DA3FF'
+                                                : '#7C8AA5',
+                                        fillOpacity: 1,
+                                        weight: 3,
+                                    }}
+                                >
+                                    <Popup>
+                                        <div className={styles.popup}>
+                                            <div
+                                                className={
+                                                    styles.popupTitle
+                                                }
+                                            >
+                                                {region.name}
+                                            </div>
 
-                                fillColor:
-                                    index === 0
-                                        ? '#4DA3FF'
-                                        : '#7C8AA5',
+                                            <div
+                                                className={
+                                                    styles.popupRow
+                                                }
+                                            >
+                                                <span>
+                                                    Рейтинг
+                                                </span>
 
-                                fillOpacity: 1,
+                                                <strong>
+                                                    {region.rating}
+                                                </strong>
+                                            </div>
 
-                                weight: 3,
-                            }}
-                        >
-                            <Popup>
-                                <div className={styles.popup}>
-                                    <div
-                                        className={
-                                            styles.popupTitle
-                                        }
-                                    >
-                                        {region.name}
-                                    </div>
+                                            <div
+                                                className={
+                                                    styles.popupRow
+                                                }
+                                            >
+                                                <span>
+                                                    Тариф
+                                                </span>
 
-                                    <div
-                                        className={
-                                            styles.popupRow
-                                        }
-                                    >
-                                        <span>
-                                            Рейтинг
-                                        </span>
+                                                <strong>
+                                                    {
+                                                        region.electricity_tariff
+                                                    }{' '}
+                                                    ₽
+                                                </strong>
+                                            </div>
 
-                                        <strong>
-                                            {region.rating}
-                                        </strong>
-                                    </div>
+                                            <div
+                                                className={
+                                                    styles.popupRow
+                                                }
+                                            >
+                                                <span>
+                                                    Спрос
+                                                </span>
 
-                                    <div
-                                        className={
-                                            styles.popupRow
-                                        }
-                                    >
-                                        <span>
-                                            Тариф
-                                        </span>
+                                                <strong>
+                                                    {region.demand_score.toFixed(
+                                                        2,
+                                                    )}
+                                                </strong>
+                                            </div>
 
-                                        <strong>
-                                            {
-                                                region.electricity_tariff
-                                            }{' '}
-                                            ₽
-                                        </strong>
-                                    </div>
+                                            <div
+                                                className={
+                                                    styles.popupRow
+                                                }
+                                            >
+                                                <span>
+                                                    Колледжи
+                                                </span>
 
-                                    <div
-                                        className={
-                                            styles.popupRow
-                                        }
-                                    >
-                                        <span>
-                                            Спрос
-                                        </span>
+                                                <strong>
+                                                    {
+                                                        region.social
+                                                            .colleges
+                                                    }
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </Popup>
+                                </CircleMarker>
+                            );
+                        }
 
-                                        <strong>
-                                            {region.demand_score.toFixed(
-                                                2,
-                                            )}
-                                        </strong>
-                                    </div>
-
-                                    <div
-                                        className={
-                                            styles.popupRow
-                                        }
-                                    >
-                                        <span>
-                                            Колледжи
-                                        </span>
-
-                                        <strong>
-                                            {
-                                                region.social
-                                                    .colleges
+                        return sites.map((site, siteIndex) => (
+                            <CircleMarker
+                                key={site.id}
+                                center={site.coords}
+                                radius={regionIndex === 0 && siteIndex === 0 ? 18 : 14}
+                                pathOptions={{
+                                    color:
+                                        regionIndex === 0 && siteIndex === 0
+                                            ? '#4DA3FF'
+                                            : '#7C8AA5',
+                                    fillColor:
+                                        regionIndex === 0 && siteIndex === 0
+                                            ? '#4DA3FF'
+                                            : '#7C8AA5',
+                                    fillOpacity: 1,
+                                    weight: 3,
+                                }}
+                            >
+                                <Popup>
+                                    <div className={styles.popup}>
+                                        <div
+                                            className={
+                                                styles.popupTitle
                                             }
-                                        </strong>
+                                        >
+                                            {site.name}
+                                        </div>
+
+                                        <div
+                                            className={
+                                                styles.popupRow
+                                            }
+                                        >
+                                            <span>
+                                                Регион
+                                            </span>
+
+                                            <strong>
+                                                {region.name}
+                                            </strong>
+                                        </div>
+
+                                        <div
+                                            className={
+                                                styles.popupRow
+                                            }
+                                        >
+                                            <span>
+                                                Спрос
+                                            </span>
+
+                                            <strong>
+                                                {(site.demand_score || region.demand_score).toFixed(
+                                                    2,
+                                                )}
+                                            </strong>
+                                        </div>
+
+                                        <div
+                                            className={
+                                                styles.popupRow
+                                            }
+                                        >
+                                            <span>
+                                                Мощность
+                                            </span>
+
+                                            <strong>
+                                                {site.power_kva} кВА
+                                            </strong>
+                                        </div>
+
+                                        <div
+                                            className={
+                                                styles.popupRow
+                                            }
+                                        >
+                                            <span>
+                                                Стоимость
+                                            </span>
+
+                                            <strong>
+                                                {site.cost_land} ₽
+                                            </strong>
+                                        </div>
                                     </div>
-                                </div>
-                            </Popup>
-                        </CircleMarker>
-                    ),
+                                </Popup>
+                            </CircleMarker>
+                        ));
+                    },
                 )}
             </MapContainer>
 
