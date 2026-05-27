@@ -82,6 +82,16 @@ export async function analyzeLocation(input: AnalysisInput): Promise<AnalysisRes
   return response.json();
 }
 
+export async function fetchCatalog(): Promise<{ regions: RegionDto[]; sites: SiteDto[] }> {
+  const [regRes, siteRes] = await Promise.all([
+    fetch(`${API_BASE_URL}/api/catalog/regions`),
+    fetch(`${API_BASE_URL}/api/catalog/sites`),
+  ]);
+  if (!regRes.ok || !siteRes.ok) throw new Error('Failed to fetch catalog');
+  return { regions: await regRes.json(), sites: await siteRes.json() };
+}
+
+
 export async function getRenders(requestId: string): Promise<Array<{ View: string; Url: string }>> {
   const response = await fetch(`${API_BASE_URL}/api/analysis/renders/${requestId}`);
 
