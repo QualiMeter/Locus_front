@@ -15,6 +15,7 @@ import { Analytics } from './components/Analytics';
 
 import styles from './App.module.css';
 import { useEffect } from 'react';
+import { analyzeLocation, AnalysisResultDto, RegionDto, SiteDto } from './api';
 const DEFAULT_FORM: FormState = {
   volume: 300,
 
@@ -72,6 +73,9 @@ export default function App() {
 
   const [submitted, setSubmitted] =
     useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [apiResults, setApiResults] = useState<AnalysisResultDto | null>(null);
   const [theme, setTheme] = useState<'dark' | 'light'>(
     () =>
       (localStorage.getItem('theme') as
@@ -79,11 +83,13 @@ export default function App() {
         | 'light') || 'dark',
   );
   const sortedRegions = useMemo(
-    () =>
-      [...REGIONS].sort(
+    () => {
+      const regions = apiResults?.topRegions || REGIONS;
+      return [...regions].sort(
         (a, b) => b.rating - a.rating,
-      ),
-    [],
+      );
+    },
+    [apiResults],
   );
   useEffect(() => {
     document.documentElement.setAttribute(
@@ -94,20 +100,44 @@ export default function App() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const handleFind = () => {
-    setSubmitted(true);
+  const handleFind = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await analyzeLocation({
+        ProductionVolumeKmsq: form.volume as number,
+        EmployeeCount: form.workers as number,
+        BudgetRubMillion: form.budget as number,
+        NeedsRailway: form.railway,
+        MaxHighwayDistKm: form.highwayDist,
+        ArchPriority: form.archPriority,
+        Amenities: form.amenities,
+        HousingPercent: form.housing,
+        HousingType: form.housingType,
+        KindergartenSlots: form.kindergarten,
+        Sports: form.sports,
+      });
+      setApiResults(result);
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      setSubmitted(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const activeRegion =
-    REGIONS[activeRegionIdx];
+    (sortedRegions[activeRegionIdx] || REGIONS[activeRegionIdx]) as RegionDto | typeof REGIONS[0];
 
   const bestSiteInRegion = activeRegion.top_sites?.[0];
-  const siteForAnalytics = bestSiteInRegion || SITES.find((s) => s.region_id === activeRegion.id) || SITES[0];
+  const allSites = apiResults?.filteredSites || SITES;
+  const siteForAnalytics = bestSiteInRegion || allSites.find((s) => s.region_id === activeRegion.id) || allSites[0];
 
   const activeSite =
-    SITES.find(
+    allSites.find(
       (s) => s.region_id === activeRegion.id,
-    ) || SITES[0];
+    ) || allSites[0];
 
   return (
     <div className={styles.root}>
@@ -521,10 +551,11 @@ export default function App() {
             <button
               className={styles.findBtn}
               onClick={handleFind}
+              disabled={loading}
             >
-              <span>📍</span>
+              <span>{loading ? '⏳' : '📍'}</span>
 
-              Найти участок
+              {loading ? 'Поиск...' : 'Найти участок'}
             </button>
           </div>
         </aside>
@@ -727,7 +758,22 @@ export default function App() {
             </div>
           </div>
 
-          {submitted && (
+          {error && (
+            <div
+              className={styles.errorBanner}
+              style={{
+                background: '#dc3545',
+                padding: '12px 16px',
+                borderRadius: '8px',
+                marginBottom: '16px',
+                color: 'white',
+              }}
+            >
+              ❌ Ошибка: {error}
+            </div>
+          )}
+
+          {submitted && !error && (
             <div
               className={styles.successBanner}
             >
