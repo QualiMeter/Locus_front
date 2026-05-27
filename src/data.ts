@@ -33,6 +33,7 @@ export interface Region {
     colors_techno: string[];
     colors_eco: string[];
   };
+  top_sites?: Site[];
 }
 
 export interface Site {
@@ -64,13 +65,13 @@ export interface Site {
 }
 
 export type ArchPriority =
-    | 'authentic'
-    | 'techno'
-    | 'eco';
+  | 'authentic'
+  | 'techno'
+  | 'eco';
 
 export type HousingType =
-    | 'dormitory'
-    | 'apartments';
+  | 'dormitory'
+  | 'apartments';
 
 export interface FormState {
   volume: number | '';
