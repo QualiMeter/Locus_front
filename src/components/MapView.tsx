@@ -13,6 +13,7 @@ interface Props {
     topRegions: (Region | RegionDto)[];
 }
 
+// Fix for Leaflet default icons in React
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: '',
@@ -21,8 +22,11 @@ L.Icon.Default.mergeOptions({
 });
 
 export function MapView({ topRegions }: Props) {
-    // Определяем центр карты на основе координат площадок
+    // Определяем центр карты на основе координат ПЛОЩАДОК (sites)
+    // Собираем все площадки из всех регионов в один плоский список
     const allSites = topRegions.flatMap((r) => r.top_sites || []);
+
+    // Центрируем карту на первой доступной площадке, либо на первом регионе, либо на дефолтных координатах
     const mapCenter: [number, number] =
         allSites.length > 0
             ? allSites[0].coords
@@ -47,14 +51,16 @@ export function MapView({ topRegions }: Props) {
                 {topRegions.map((region, regionIndex) => {
                     const sites = region.top_sites || [];
 
-                    // Если есть площадки, рисуем маркеры для каждой
+                    // Если есть площадки, рисуем маркеры для каждой площадки
                     if (sites.length > 0) {
                         return sites.map((site, siteIndex) => {
+                            // Лучшая площадка — первая в списке первого региона
                             const isBest = regionIndex === 0 && siteIndex === 0;
+
                             return (
                                 <CircleMarker
                                     key={site.id}
-                                    center={site.coords}
+                                    center={site.coords} // <-- КООРДИНАТЫ БЕРУТСЯ ЗДЕСЬ ИЗ SITE
                                     radius={isBest ? 18 : 14}
                                     pathOptions={{
                                         color: isBest ? '#4DA3FF' : '#7C8AA5',
@@ -86,7 +92,7 @@ export function MapView({ topRegions }: Props) {
                                             </div>
                                             <div className={styles.popupRow}>
                                                 <span>Площадь</span>
-                                                <strong>{site.coords || 'N/A'} га</strong>
+                                                <strong>{'N/A'} га</strong>
                                             </div>
                                         </div>
                                     </Popup>
@@ -95,7 +101,7 @@ export function MapView({ topRegions }: Props) {
                         });
                     }
 
-                    // Если площадок нет, рисуем маркер региона
+                    // Fallback: если площадок нет (например, локальные моки без top_sites), рисуем маркер региона
                     return (
                         <CircleMarker
                             key={region.id}
