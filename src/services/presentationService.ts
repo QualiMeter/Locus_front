@@ -9,8 +9,8 @@ export interface PresentationData {
 
 class PresentationService {
   async generatePresentation(
-    regionData: any, 
-    siteData: any, 
+    regionData: any,
+    siteData: any,
     formData: any
   ): Promise<string> {
     try {
@@ -34,7 +34,7 @@ class PresentationService {
     } catch (error) {
       console.log('AI API недоступен, используем локальную генерацию');
     }
-    
+
     return this.generatePresentationFromData(regionData, siteData, formData);
   }
 
@@ -46,9 +46,7 @@ class PresentationService {
     const housing = Number(formData.housing || 0);
 
     const requiredPower = 300 + (volume / 1000) * 400;
-    const connectionCost = (siteData.connection_rub_per_kw || 4500) * requiredPower;
-    const totalLandConn = (siteData.cost_land || 0) + connectionCost;
-    
+
     const workshopCost = volume * 0.4 * 35000;
     const roadsCost = workers * 0.5 * 25 * 5000;
     const kindergartenCost = kindergarten * (workers / 100) * 15 * 50000;
@@ -58,7 +56,7 @@ class PresentationService {
 
     // Определяем цветовую схему для региона (из культурных данных)
     const colors = regionData.cultural?.colors_authentic || ['#4da3ff', '#236bff', '#2ecc71'];
-    
+
     // Формируем преимущества на основе данных
     const advantages = [];
     if (regionData.tax_incentives) advantages.push('Налоговые льготы и преференции');

@@ -10,13 +10,14 @@ import { NumericInput } from './components/NumericInput';
 import { MapView } from './components/MapView';
 import { ConceptBoard } from './components/ConceptBoard';
 import { Analytics } from './components/Analytics';
+import { PresentationButton } from './components/PresentationButton';
 import styles from './App.module.css';
 import {
   analyzeLocation,
   fetchCatalog,
   AnalysisResultDto,
   RegionDto,
-  SiteDto
+  SiteDto,
 } from './api';
 
 const DEFAULT_FORM: FormState = {
@@ -69,6 +70,7 @@ export default function App() {
       });
   }, []);
 
+  // Тема
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
@@ -138,6 +140,7 @@ export default function App() {
 
   return (
     <div className={styles.root}>
+      {/* HEADER */}
       <header className={styles.header}>
         <div className={styles.logo}>
           <span className={styles.logoMark}>L</span>
@@ -150,9 +153,10 @@ export default function App() {
       </header>
 
       <div className={styles.layout}>
+        {/* LEFT PANEL */}
         <aside className={styles.aside}>
           <div className={styles.asideInner}>
-            {/* ... ФОРМЫ ВВОДА (без изменений) ... */}
+            {/* ПРОИЗВОДСТВО */}
             <div className={styles.formBlock}>
               <div className={styles.formBlockTitle}><span className={styles.formBlockIcon}>📦</span>Производство</div>
               <div className={styles.formFields}>
@@ -162,6 +166,7 @@ export default function App() {
               </div>
             </div>
 
+            {/* ЛОГИСТИКА */}
             <div className={styles.formBlock}>
               <div className={styles.formBlockTitle}><span className={styles.formBlockIcon}>🚚</span>Логистика</div>
               <div className={styles.formFields}>
@@ -176,6 +181,7 @@ export default function App() {
               </div>
             </div>
 
+            {/* АРХИТЕКТУРА */}
             <div className={styles.formBlock}>
               <div className={styles.formBlockTitle}><span className={styles.formBlockIcon}>🎨</span>Архитектура</div>
               <div className={styles.formFields}>
@@ -198,6 +204,7 @@ export default function App() {
               </div>
             </div>
 
+            {/* СОЦИАЛКА */}
             <div className={styles.formBlock}>
               <div className={styles.formBlockTitle}><span className={styles.formBlockIcon}>🤝</span>Социальные приоритеты</div>
               <div className={styles.formFields}>
@@ -244,14 +251,15 @@ export default function App() {
           </div>
         </aside>
 
+        {/* RIGHT PANEL */}
         <main className={styles.main}>
+          {/* MAP + TABLE */}
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <span className={styles.cardIcon}>🗺</span>
               {isSearched ? 'ТОП-3 региона с площадками' : 'Все регионы и площадки'}
             </div>
             <div className={styles.cardBody}>
-              {/* Если поиск не выполнен, показываем все регионы, иначе только ТОП-3 */}
               <MapView
                 topRegions={apiResults ? sortedRegions.slice(0, 3) : []}
                 initialSites={apiResults ? apiResults.filteredSites : (allData?.sites || SITES)}
@@ -284,6 +292,7 @@ export default function App() {
             </div>
           </div>
 
+          {/* CONCEPT */}
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <span className={styles.cardIcon}>🖼</span> Концепт-борд
@@ -298,10 +307,16 @@ export default function App() {
             </div>
           </div>
 
+          {/* ANALYTICS + PRESENTATION BUTTON */}
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <span className={styles.cardIcon}>📋</span> Аналитическая справка
               <span className={styles.regionBadge}>{activeRegion.name} · {siteForAnalytics.name}</span>
+              <PresentationButton
+                region={activeRegion}
+                site={siteForAnalytics}
+                formData={form}
+              />
             </div>
             <div className={styles.cardBody}>
               <Analytics region={activeRegion as any} site={siteForAnalytics as any} form={form} />
