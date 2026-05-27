@@ -39,9 +39,9 @@ export function MapView({
             <MapContainer
                 center={mapCenter}
                 zoom={4}
-                scrollWheelZoom={false}
+                scrollWheelZoom={true}
                 className={styles.map}
-                zoomControl={false}
+                zoomControl={true}
             >
                 <TileLayer
                     attribution=""
