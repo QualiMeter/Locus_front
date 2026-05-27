@@ -31,7 +31,7 @@ export function MapView({ topRegions }: Props) {
                             return (
                                 <CircleMarker
                                     key={site.id}
-                                    center={site.coords} // <-- строго coords
+                                    center={region.coords} // <-- строго coords
                                     radius={isBest ? 18 : 14}
                                     pathOptions={{
                                         color: isBest ? '#4DA3FF' : '#7C8AA5',
