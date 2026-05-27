@@ -24,7 +24,7 @@ export function MapView({ topRegions }: Props) {
                 {topRegions.map((region, rIdx) => {
                     const sites = region.top_sites || [];
 
-                    // Если есть площадки -> рисуем маркеры по site.coords
+                    console.error(sites.map(s => `coords: ${s.coords}`).join(", "))
                     if (sites.length > 0) {
                         return sites.map((site, sIdx) => {
                             const isBest = rIdx === 0 && sIdx === 0;
