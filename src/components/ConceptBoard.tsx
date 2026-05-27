@@ -5,10 +5,12 @@ import {
   ArchPriority,
 } from '../data';
 
+import { RegionDto } from '../api';
+
 import styles from './ConceptBoard.module.css';
 
 interface Props {
-  region: Region;
+  region: Region | RegionDto;
   priority: ArchPriority;
 }
 

@@ -10,11 +10,12 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import { Region } from '../data';
+import { RegionDto } from '../api';
 
 import styles from './MapView.module.css';
 
 interface Props {
-    topRegions: Region[];
+    topRegions: (Region | RegionDto)[];
 }
 
 delete (L.Icon.Default.prototype as any)

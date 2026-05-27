@@ -100,6 +100,13 @@ export default function App() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    // Reset region index if out of bounds
+    if (activeRegionIdx >= sortedRegions.length) {
+      setActiveRegionIdx(0);
+    }
+  }, [sortedRegions]);
+
   const handleFind = async () => {
     setLoading(true);
     setError(null);
@@ -128,7 +135,7 @@ export default function App() {
   };
 
   const activeRegion =
-    (sortedRegions[activeRegionIdx] || REGIONS[activeRegionIdx]) as RegionDto | typeof REGIONS[0];
+    sortedRegions[Math.min(activeRegionIdx, sortedRegions.length - 1)] || REGIONS[0];
 
   const bestSiteInRegion = activeRegion.top_sites?.[0];
   const allSites = apiResults?.filteredSites || SITES;
@@ -705,7 +712,7 @@ export default function App() {
               Концепт-борд
 
               <div className={styles.regionTabs}>
-                {REGIONS.map((r, i) => (
+                {sortedRegions.slice(0, 3).map((r, i) => (
                   <button
                     key={r.id}
                     className={`${styles.regionTab} ${activeRegionIdx === i

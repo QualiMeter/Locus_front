@@ -1,10 +1,11 @@
 import React from 'react';
 import { Region, Site, FormState } from '../data';
+import { RegionDto, SiteDto } from '../api';
 import styles from './Analytics.module.css';
 
 interface Props {
-  region: Region;
-  site: Site;
+  region: Region | RegionDto;
+  site: Site | SiteDto;
   form: FormState;
 }
 
