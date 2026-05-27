@@ -82,6 +82,26 @@ export async function analyzeLocation(input: AnalysisInput): Promise<AnalysisRes
   return response.json();
 }
 
+<<<<<<< HEAD
+=======
+export async function fetchCatalog(): Promise<{ regions: RegionDto[]; sites: SiteDto[] }> {
+  const [regRes, siteRes] = await Promise.all([
+    fetch(`${API_BASE_URL}/api/catalog/regions`),
+    fetch(`${API_BASE_URL}/api/catalog/sites`),
+  ]);
+
+  if (!regRes.ok || !siteRes.ok) {
+    throw new Error('Ошибка загрузки каталога');
+  }
+
+  return {
+    regions: await regRes.json(),
+    sites: await siteRes.json(),
+  };
+}
+
+
+>>>>>>> 3807758af26c7c22f320ad4d4846728bd3292dac
 export async function getRenders(requestId: string): Promise<Array<{ View: string; Url: string }>> {
   const response = await fetch(`${API_BASE_URL}/api/analysis/renders/${requestId}`);
 
