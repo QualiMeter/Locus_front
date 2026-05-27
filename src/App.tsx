@@ -252,7 +252,10 @@ export default function App() {
             </div>
             <div className={styles.cardBody}>
               {/* Если поиск не выполнен, показываем все регионы, иначе только ТОП-3 */}
-              <MapView topRegions={isSearched ? sortedRegions.slice(0, 3) : sortedRegions} />
+              <MapView
+                topRegions={apiResults ? sortedRegions.slice(0, 3) : []}
+                initialSites={apiResults ? apiResults.filteredSites : (allData?.sites || SITES)}
+              />
               <div className={styles.tableWrap}>
                 <table className={styles.regionsTable}>
                   <thead>
