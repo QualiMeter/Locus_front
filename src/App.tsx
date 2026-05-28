@@ -126,7 +126,9 @@ export default function App() {
   const activeRegion = sortedRegions[Math.min(activeRegionIdx, sortedRegions.length - 1)] || (displayRegions[0] as RegionDto);
 
   const bestSiteInRegion = activeRegion.top_sites?.[0];
-  const siteForAnalytics = bestSiteInRegion || displaySites.find((s) => s.region_id === activeRegion.id) || displaySites[0];
+  const siteForAnalytics = bestSiteInRegion
+    || displaySites.find((s) => s?.region_id === activeRegion?.id)
+    || displaySites?.[0];
 
   return (
     <div className={styles.root}>
@@ -290,7 +292,9 @@ export default function App() {
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <span className={styles.cardIcon}>📋</span> Аналитическая справка
-              <span className={styles.regionBadge}>{activeRegion.name} · {siteForAnalytics?.name ?? 'Площадка не выбрана'}</span>
+              <span className={styles.regionBadge}>
+                {activeRegion?.name ?? 'Регион'} · {siteForAnalytics?.name ?? 'Площадка не выбрана'}
+              </span>
               <PresentationButton
                 region={activeRegion}
                 site={siteForAnalytics}
