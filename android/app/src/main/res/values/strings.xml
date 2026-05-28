@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Locus</string>
+    <string name="title_activity_main">Locus</string>
+    <string name="package_name">com.hw.locus</string>
+    <string name="custom_url_scheme">com.hw.locus</string>
+</resources>
