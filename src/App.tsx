@@ -123,11 +123,13 @@ export default function App() {
     setActiveRegionIdx(0);
   };
 
-  const activeRegion = sortedRegions[Math.min(activeRegionIdx, sortedRegions.length - 1)] || (displayRegions[0] as RegionDto);
+  const activeRegion = sortedRegions?.length
+    ? sortedRegions[Math.min(activeRegionIdx, sortedRegions.length - 1)]
+    : displayRegions?.[0];
 
-  const bestSiteInRegion = activeRegion.top_sites?.[0];
+  const bestSiteInRegion = (activeRegion as any)?.top_sites?.[0];
   const siteForAnalytics = bestSiteInRegion
-    || displaySites.find((s) => s?.region_id === activeRegion?.id)
+    || displaySites?.find((s) => s?.region_id === activeRegion?.id)
     || displaySites?.[0];
 
   return (
@@ -253,7 +255,7 @@ export default function App() {
                     <tr><th>Регион</th><th>Рейтинг</th><th>Льготы</th><th>Тариф</th><th>Сталь</th><th>Утеплитель</th><th>Зарплата</th><th>Колледжи</th><th>Аренда</th><th>Детсады</th><th>Экокласс</th><th>Спрос</th></tr>
                   </thead>
                   <tbody>
-                    {(isSearched ? sortedRegions.slice(0, 3) : sortedRegions).map((r, i) => (
+                    {(isSearched ? sortedRegions?.slice(0, 3) : sortedRegions)?.map((r, i) => (
                       <tr key={r.id} className={i === 0 ? styles.topRow : ''}>
                         <td><strong>{r.name}</strong></td>
                         <td><span className={styles.ratingPill}>{r.rating}</span></td>
@@ -285,7 +287,11 @@ export default function App() {
               </div>
             </div>
             <div className={styles.cardBody}>
-              <ConceptBoard region={activeRegion as any} priority={form.archPriority} />
+              {activeRegion?.cultural ? (
+                <ConceptBoard region={activeRegion} priority={form.archPriority} />
+              ) : (
+                <div className={styles.cardBody}>Загрузка данных региона...</div>
+              )}
             </div>
           </div>
 
