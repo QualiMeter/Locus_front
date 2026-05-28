@@ -54,29 +54,23 @@ export default function App() {
     () => (localStorage.getItem('theme') as 'dark' | 'light') || 'dark',
   );
 
-  // Состояние для данных с бэкенда
   const [allData, setAllData] = useState<{ regions: RegionDto[]; sites: SiteDto[] } | null>(null);
-  // Состояние для результатов поиска
   const [apiResults, setApiResults] = useState<AnalysisResultDto | null>(null);
 
-  // 1. Загрузка данных при запуске
   useEffect(() => {
     fetchCatalog()
       .then((data) => setAllData(data))
       .catch((err) => {
         console.error(err);
-        // Если бэкенд недоступен, используем локальные данные
         setAllData({ regions: REGIONS as any, sites: SITES as any });
       });
   }, []);
 
-  // Тема
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  // Определяем, какие данные показывать: результаты поиска ИЛИ весь каталог
   const isSearched = apiResults !== null;
   const displayRegions = isSearched
     ? apiResults!.topRegions
@@ -86,13 +80,11 @@ export default function App() {
     ? apiResults!.filteredSites
     : (allData?.sites || SITES);
 
-  // Сортировка регионов
   const sortedRegions = useMemo(
     () => [...displayRegions].sort((a, b) => b.rating - a.rating),
     [displayRegions],
   );
 
-  // Сброс индекса, если регион вышел за пределы списка
   useEffect(() => {
     if (activeRegionIdx >= sortedRegions.length) {
       setActiveRegionIdx(0);
@@ -125,7 +117,6 @@ export default function App() {
     }
   };
 
-  // Кнопка очистки поиска
   const handleClear = () => {
     setApiResults(null);
     setError(null);
@@ -134,13 +125,11 @@ export default function App() {
 
   const activeRegion = sortedRegions[Math.min(activeRegionIdx, sortedRegions.length - 1)] || (displayRegions[0] as RegionDto);
 
-  // Ищем лучшую площадку в активном регионе (для поиска из результатов) или первую попавшуюся
   const bestSiteInRegion = (activeRegion as any).top_sites?.[0];
   const siteForAnalytics = bestSiteInRegion || displaySites.find((s) => s.region_id === activeRegion.id) || (displaySites[0] as SiteDto);
 
   return (
     <div className={styles.root}>
-      {/* HEADER */}
       <header className={styles.header}>
         <div className={styles.logo}>
           <span className={styles.logoMark}>L</span>
@@ -153,10 +142,8 @@ export default function App() {
       </header>
 
       <div className={styles.layout}>
-        {/* LEFT PANEL */}
         <aside className={styles.aside}>
           <div className={styles.asideInner}>
-            {/* ПРОИЗВОДСТВО */}
             <div className={styles.formBlock}>
               <div className={styles.formBlockTitle}><span className={styles.formBlockIcon}>📦</span>Производство</div>
               <div className={styles.formFields}>
@@ -166,7 +153,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* ЛОГИСТИКА */}
             <div className={styles.formBlock}>
               <div className={styles.formBlockTitle}><span className={styles.formBlockIcon}>🚚</span>Логистика</div>
               <div className={styles.formFields}>
@@ -181,7 +167,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* АРХИТЕКТУРА */}
             <div className={styles.formBlock}>
               <div className={styles.formBlockTitle}><span className={styles.formBlockIcon}>🎨</span>Архитектура</div>
               <div className={styles.formFields}>
@@ -204,7 +189,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* СОЦИАЛКА */}
             <div className={styles.formBlock}>
               <div className={styles.formBlockTitle}><span className={styles.formBlockIcon}>🤝</span>Социальные приоритеты</div>
               <div className={styles.formFields}>
@@ -237,7 +221,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* КНОПКИ */}
             <button className={styles.findBtn} onClick={handleFind} disabled={loading}>
               <span>{loading ? '⏳' : '📍'}</span>
               {loading ? 'Поиск...' : 'Найти участок'}
@@ -251,9 +234,7 @@ export default function App() {
           </div>
         </aside>
 
-        {/* RIGHT PANEL */}
         <main className={styles.main}>
-          {/* MAP + TABLE */}
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <span className={styles.cardIcon}>🗺</span>
@@ -292,7 +273,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* CONCEPT */}
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <span className={styles.cardIcon}>🖼</span> Концепт-борд
@@ -307,7 +287,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* ANALYTICS + PRESENTATION BUTTON */}
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <span className={styles.cardIcon}>📋</span> Аналитическая справка

@@ -8,13 +8,13 @@ interface Props {
   renders?: string[];
 }
 
-export const PresentationButton: React.FC<Props> = ({ region, site, formData, renders }) => {
+export const PresentationButton: React.FC<Props> = ({ region, site, formData }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
-      const pptx = await presentationService.generateAdminPresentation(region, site, formData, renders);
+      const pptx = await presentationService.generateAdminPresentation(region, site, formData);
       presentationService.downloadPresentation(pptx, region.name);
     } catch (error) {
       console.error('Error:', error);
