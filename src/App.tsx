@@ -47,7 +47,6 @@ function toggleArr(arr: string[], val: string): string[] {
 }
 
 export default function App() {
-  // Инициализация OpenRouter
   const openRouterKey = import.meta.env.VITE_OPENROUTER_API_KEY;
   if (openRouterKey) {
     openRouterService.configure({ apiKey: openRouterKey });
@@ -145,8 +144,8 @@ export default function App() {
     <div className={styles.root}>
       <header className={styles.header}>
         <div className={styles.logo}>
-          <span className={styles.logoMark}>L</span>
-          <span className={styles.logoText}>LOCUS</span>
+          <span className={styles.logoMark}>P</span>
+          <span className={styles.logoText}>Plato</span>
         </div>
         <div className={styles.headerSub}>Умный подбор локации для производства сэндвич-панелей</div>
         <button className={styles.themeBtn} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
