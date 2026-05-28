@@ -28,7 +28,7 @@ class OpenRouterService {
 		formData: any
 	): Promise<LLMAnalytics> {
 		if (this.useMock || !this.apiKey) {
-			console.log('🔧 OpenRouter не настроен, используем локальную генерацию');
+			console.log('OpenRouter не настроен, используем локальную генерацию');
 			return this.generateMockAnalytics(regionData, siteData, formData);
 		}
 
@@ -153,7 +153,6 @@ class OpenRouterService {
 		return this.generateMockAnalytics(regionData, siteData, formData);
 	}
 
-	// ========== MOCK МЕТОДЫ (ЗАГЛУШКА) ==========
 
 	private generateMockAnalytics(regionData: any, siteData: any, formData: any): LLMAnalytics {
 		return {
@@ -173,57 +172,57 @@ class OpenRouterService {
 
 	private generateMockInvestmentVerdict(regionData: any): string {
 		if (regionData.tax_incentives) {
-			return `✅ Регион "${regionData.name}" обладает высокой инвестиционной привлекательностью.`;
+			return `Регион "${regionData.name}" обладает высокой инвестиционной привлекательностью.`;
 		}
-		return `📊 Средняя инвестиционная привлекательность региона "${regionData.name}".`;
+		return `Средняя инвестиционная привлекательность региона "${regionData.name}".`;
 	}
 
 	private generateMockRiskRecommendations(regionData: any, siteData: any): string[] {
 		const recs = [];
-		if (regionData.social?.rent_1room > 35000) recs.push('🏠 Высокая аренда жилья → построить общежитие.');
-		if (siteData.highway_km > 15) recs.push('🚌 Удалённость от города → организовать транспорт.');
-		if (!siteData.gas) recs.push('⛽ Отсутствие газа → предусмотреть альтернативы.');
-		if (recs.length === 0) recs.push('✅ Условия благоприятные.');
+		if (regionData.social?.rent_1room > 35000) recs.push('Высокая аренда жилья → построить общежитие.');
+		if (siteData.highway_km > 15) recs.push('Удалённость от города → организовать транспорт.');
+		if (!siteData.gas) recs.push('Отсутствие газа → предусмотреть альтернативы.');
+		if (recs.length === 0) recs.push('Условия благоприятные.');
 		return recs;
 	}
 
 	private generateMockHRForecast(regionData: any, formData: any): string {
 		const workers = Number(formData.workers || 0);
-		return `👥 В регионе ${regionData.social?.colleges || 0} колледжей. Закрытие ${workers} вакансий за 2-3 месяца.`;
+		return `В регионе ${regionData.social?.colleges || 0} колледжей. Закрытие ${workers} вакансий за 2-3 месяца.`;
 	}
 
 	private generateMockEcologyRecommendation(regionData: any): string {
 		const ecClass = regionData.economy?.ecology_class || 3;
-		if (ecClass >= 4) return `🌿 Экокласс ${ecClass} → требуется усиленная очистка.`;
-		return `🌿 Экокласс ${ecClass} → стандартных мер достаточно.`;
+		if (ecClass >= 4) return `Экокласс ${ecClass} → требуется усиленная очистка.`;
+		return `Экокласс ${ecClass} → стандартных мер достаточно.`;
 	}
 
 	private generateMockLogisticsOptimization(regionData: any): string {
-		return `🚚 Расстояние до стали ${regionData.steel_dist} км.`;
+		return `Расстояние до стали ${regionData.steel_dist} км.`;
 	}
 
 	private generateMockOpexEnergy(regionData: any, formData: any): string {
 		const volume = Number(formData.volume || 0);
 		const power = 300 + (volume / 1000) * 400;
 		const cost = power * 0.72 * 24 * 365 * regionData.electricity_tariff / 1e6;
-		return `⚡ ${cost.toFixed(1)} млн ₽/год`;
+		return `${cost.toFixed(1)} млн ₽/год`;
 	}
 
 	private generateMockOpexPayroll(regionData: any, formData: any): string {
 		const workers = Number(formData.workers || 0);
 		const rate = regionData.economy?.reduced_insurance ? 1.076 : 1.3;
 		const fot = regionData.economy?.avg_salary * workers * rate / 1e6;
-		return `💰 ${fot.toFixed(1)} млн ₽/мес`;
+		return `${fot.toFixed(1)} млн ₽/мес`;
 	}
 
 	private generateMockBenchmarking(regionData: any): string {
-		return `📊 Регион занимает ${regionData.rating > 80 ? 'высокие' : 'средние'} позиции.`;
+		return `Регион занимает ${regionData.rating > 80 ? 'высокие' : 'средние'} позиции.`;
 	}
 
 	private generateMockPresentationText(regionData: any, formData: any): string {
 		const workers = Number(formData.workers || 0);
 		const budget = Number(formData.budget || 0);
-		return `🏭 Проект в ${regionData.name}: ${workers} рабочих мест, ${Math.round(budget * 0.15)} млн ₽ налогов/год.`;
+		return `Проект в ${regionData.name}: ${workers} рабочих мест, ${Math.round(budget * 0.15)} млн ₽ налогов/год.`;
 	}
 }
 
