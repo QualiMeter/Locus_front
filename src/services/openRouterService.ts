@@ -19,7 +19,7 @@ class OpenRouterService {
 	configure(config: { apiKey: string }) {
 		this.apiKey = config.apiKey;
 		this.useMock = false;
-		console.log('✅ OpenRouter API настроен');
+		console.log('OpenRouter API настроен');
 	}
 
 	async generateAnalytics(
