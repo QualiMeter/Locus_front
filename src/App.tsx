@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
+import { openRouterService } from './services/openRouterService';
 import {
   REGIONS,
   SITES,
@@ -46,6 +47,14 @@ function toggleArr(arr: string[], val: string): string[] {
 }
 
 export default function App() {
+  // Инициализация OpenRouter
+  const openRouterKey = import.meta.env.VITE_OPENROUTER_API_KEY;
+  if (openRouterKey) {
+    openRouterService.configure({ apiKey: openRouterKey });
+    console.log('✅ OpenRouter API настроен');
+  } else {
+    console.log('⚠️ OpenRouter API ключ не найден');
+  }
   const [form, setForm] = useState<FormState>(DEFAULT_FORM);
   const [activeRegionIdx, setActiveRegionIdx] = useState(0);
   const [loading, setLoading] = useState(false);
