@@ -3,6 +3,7 @@ import L from 'leaflet';
 import { Region, Site } from '../data';
 import { RegionDto, SiteDto } from '../api';
 import styles from './MapView.module.css';
+import { useEffect, useState } from 'react';
 
 interface Props {
     topRegions?: (Region | RegionDto)[];
@@ -17,6 +18,24 @@ L.Icon.Default.mergeOptions({
 });
 
 export function MapView({ topRegions = [], initialSites }: Props) {
+    const [theme, setTheme] = useState<'dark' | 'light'>(
+        () => (localStorage.getItem('theme') as 'dark' | 'light') || 'dark',
+    );
+
+    useEffect(() => {
+        const observer = new MutationObserver(() => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            setTheme(isDark ? 'dark' : 'light')
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
+
+        return () => observer.disconnect();
+    }, []);
+
     const mapCenter: [number, number] = initialSites?.length
         ? initialSites[0].coords
         : topRegions.length
@@ -26,10 +45,9 @@ export function MapView({ topRegions = [], initialSites }: Props) {
     return (
         <div className={styles.mapWrap}>
             <MapContainer center={mapCenter} zoom={4} scrollWheelZoom className={styles.map} zoomControl>
-                <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+                <TileLayer url={`https://{s}.basemaps.cartocdn.com/${theme}_all/{z}/{x}/{y}{r}.png`} />
 
                 {initialSites ? (
-                    // 🟢 Режим "Каталог": рисуем все площадки напрямую
                     initialSites.map((site, idx) => (
                         <CircleMarker
                             key={site.id}
@@ -54,7 +72,6 @@ export function MapView({ topRegions = [], initialSites }: Props) {
                         </CircleMarker>
                     ))
                 ) : (
-                    // 🔵 Режим "Результат анализа": рисуем через регионы
                     topRegions.map((region, rIdx) => {
                         const sites = region.top_sites || [];
                         if (sites.length === 0) {

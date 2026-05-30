@@ -106,10 +106,9 @@
 
 :global(.leaflet-interactive) {
   filter:
-          drop-shadow(
-                  0 0 12px rgba(77,163,255,0.6)
-          );
+    drop-shadow(0 0 12px rgba(77, 163, 255, 0.6));
 }
+
 :global(.leaflet-control-attribution) {
   display: none !important;
 }
